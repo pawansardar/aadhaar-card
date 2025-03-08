@@ -3,6 +3,7 @@ package com.pawan.aadhaarcard;
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageViewFront;
     private ImageView imageViewBack;
     private EditText editTextName, editTextDOB, editTextAddress, editTextAadhaarNumber;
+    private String aadhaarNumber = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +60,72 @@ public class MainActivity extends AppCompatActivity {
         Button btnSelectImageBack = findViewById(R.id.btnSelectImageBack);
         Button btnCaptureImageFront = findViewById(R.id.btnCaptureImageFront);
         Button btnCaptureImageBack = findViewById(R.id.btnCaptureImageBack);
+        Button btnSubmit = findViewById(R.id.btnSubmit);
 
         btnSelectImageFront.setOnClickListener(view -> selectImage(REQUEST_IMAGE_PICK_FRONT));
         btnSelectImageBack.setOnClickListener(view -> selectImage(REQUEST_IMAGE_PICK_BACK));
         btnCaptureImageFront.setOnClickListener(view -> captureImage(REQUEST_IMAGE_CAPTURE_FRONT));
         btnCaptureImageBack.setOnClickListener(view -> captureImage(REQUEST_IMAGE_CAPTURE_BACK));
+
+        String apiKey = getApiKeyFromManifest();
+        String accountId = getAccountIdFromManifest();
+
+        String taskId = getTaskIdFromManifest();
+        String groupId = getGroupIdFromManifest();
+
+        btnSubmit.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, VerificationResultActivity.class);
+            intent.putExtra("api_key", apiKey);
+            intent.putExtra("account_id", accountId);
+            intent.putExtra("task_id", taskId);
+            intent.putExtra("group_id", groupId);
+            intent.putExtra("aadhaar_number", aadhaarNumber);
+            startActivity(intent);
+        });
+    }
+
+    private String getApiKeyFromManifest() {
+        try {
+            ApplicationInfo appInfo = getPackageManager()
+                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            return appInfo.metaData.getString("aadhaar_api_key");
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getAccountIdFromManifest() {
+        try {
+            ApplicationInfo appInfo = getPackageManager()
+                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            return appInfo.metaData.getString("account_id");
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getTaskIdFromManifest() {
+        try {
+            ApplicationInfo appInfo = getPackageManager()
+                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            return appInfo.metaData.getString("task_id");
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getGroupIdFromManifest() {
+        try {
+            ApplicationInfo appInfo = getPackageManager()
+                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            return appInfo.metaData.getString("group_id");
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void selectImage(int requestCode) {
@@ -196,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
         String resultText = text.getText();
         String name = extractName(resultText);
         String dob = extractDOB(resultText);
-        String aadhaarNumber = extractAadhaarNumber(resultText, dob);
+        aadhaarNumber = extractAadhaarNumber(resultText, dob);
         String address = extractFrontAddress(resultText, name);
 
         editTextName.setText(name);

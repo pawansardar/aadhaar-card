@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Aadhaar Card</string>
+
+    <string name="my_aadhaar_api_key">03c615cb-b0ca-4c0e-9ee3-9cd49a665df5</string>
+    <string name="my_account_id">87215ad845f6/5359c64e-46bd-46af-b78f-706ed54fe031</string>
+    <string name="my_task_id">74f4c926-250c-43ca-9c53-453e87ceacd1</string>
+    <string name="my_group_id">87215ad845f6/5359c64e-46bd-46af-b78f-706ed54fe031</string>
 </resources>
