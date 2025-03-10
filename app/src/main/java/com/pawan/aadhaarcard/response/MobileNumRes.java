@@ -6,8 +6,19 @@ public class MobileNumRes {
     @SerializedName("result")
     private Result result;
 
+    @SerializedName("status")
+    private String status;
+
     public String getMobileNumber () {
         return (result != null && result.getSourceOutput() != null) ? result.getSourceOutput().getMobileNumber() : null;
+    }
+
+    public String getState() {
+        return (result != null && result.getSourceOutput() != null) ? result.getSourceOutput().getState() : null;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public static class Result {
@@ -23,8 +34,15 @@ public class MobileNumRes {
         @SerializedName("mobile_number")
         private String mobileNumber;
 
+        @SerializedName("state")
+        private String state;
+
         public String getMobileNumber() {
             return mobileNumber;
+        }
+
+        public String getState() {
+            return state;
         }
     }
 }

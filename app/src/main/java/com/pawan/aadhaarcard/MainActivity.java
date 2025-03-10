@@ -42,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView imageViewFront;
     private ImageView imageViewBack;
-    private EditText editTextName, editTextDOB, editTextAddress, editTextAadhaarNumber;
+    private EditText editTextName, editTextDOB, editTextAddress, editTextAadhaarNumber, editTextMobileNumber;
     private String aadhaarNumber = "";
+    private String userMobileNumber = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         editTextDOB = findViewById(R.id.editTextDOB);
         editTextAddress = findViewById(R.id.editTextAddress);
         editTextAadhaarNumber = findViewById(R.id.editTextAadhaarNumber);
+        editTextMobileNumber = findViewById(R.id.editTextMobileNumber);
         Button btnSelectImageFront = findViewById(R.id.btnSelectImageFront);
         Button btnSelectImageBack = findViewById(R.id.btnSelectImageBack);
         Button btnCaptureImageFront = findViewById(R.id.btnCaptureImageFront);
@@ -74,13 +76,17 @@ public class MainActivity extends AppCompatActivity {
         String groupId = getGroupIdFromManifest();
 
         btnSubmit.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, VerificationResultActivity.class);
-            intent.putExtra("api_key", apiKey);
-            intent.putExtra("account_id", accountId);
-            intent.putExtra("task_id", taskId);
-            intent.putExtra("group_id", groupId);
-            intent.putExtra("aadhaar_number", aadhaarNumber);
-            startActivity(intent);
+            userMobileNumber = editTextMobileNumber.getText().toString().trim();
+            if (!aadhaarNumber.isEmpty() && !userMobileNumber.isEmpty()) {
+                Intent intent = new Intent(MainActivity.this, VerificationResultActivity.class);
+                intent.putExtra("api_key", apiKey);
+                intent.putExtra("account_id", accountId);
+                intent.putExtra("task_id", taskId);
+                intent.putExtra("group_id", groupId);
+                intent.putExtra("aadhaar_number", aadhaarNumber);
+                intent.putExtra("mobile_number", userMobileNumber);
+                startActivity(intent);
+            }
         });
     }
 
