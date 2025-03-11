@@ -13,7 +13,6 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,10 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE_FRONT = 3;
     private static final int REQUEST_IMAGE_CAPTURE_BACK = 4;
     private Uri imageUri;
-
     private ImageView imageViewFront;
     private ImageView imageViewBack;
-    private EditText editTextName, editTextDOB, editTextAddress, editTextAadhaarNumber, editTextMobileNumber;
+    private EditText editTextMobileNumber;
     private String aadhaarNumber = "";
     private String userMobileNumber = "";
 
@@ -53,10 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         imageViewFront = findViewById(R.id.imageViewFront);
         imageViewBack = findViewById(R.id.imageViewBack);
-        editTextName = findViewById(R.id.editTextName);
-        editTextDOB = findViewById(R.id.editTextDOB);
-        editTextAddress = findViewById(R.id.editTextAddress);
-        editTextAadhaarNumber = findViewById(R.id.editTextAadhaarNumber);
         editTextMobileNumber = findViewById(R.id.editTextMobileNumber);
         Button btnSelectImageFront = findViewById(R.id.btnSelectImageFront);
         Button btnSelectImageBack = findViewById(R.id.btnSelectImageBack);
@@ -266,19 +260,11 @@ public class MainActivity extends AppCompatActivity {
         String name = extractName(resultText);
         String dob = extractDOB(resultText);
         aadhaarNumber = extractAadhaarNumber(resultText, dob);
-        String address = extractFrontAddress(resultText, name);
-
-        editTextName.setText(name);
-        editTextDOB.setText(dob);
-        editTextAadhaarNumber.setText(aadhaarNumber);
-        editTextAddress.setText(address);
     }
 
     private void extractBackInfo(Text text) {
         String resultText = text.getText();
         String address = extractBackAddress(resultText);
-
-        editTextAddress.setText(address);
     }
 
     private String extractName(String text) {

@@ -1,14 +1,17 @@
 package com.pawan.aadhaarcard;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
-import com.google.gson.Gson;
 import com.pawan.aadhaarcard.api_service.AadhaarVerificationApiService;
 import com.pawan.aadhaarcard.network.RetrofitClient;
 import com.pawan.aadhaarcard.request.AadhaarNumReq;
@@ -23,17 +26,22 @@ import retrofit2.Response;
 
 public class VerificationResultActivity extends AppCompatActivity {
     AadhaarVerificationApiService apiService;
-
-    private TextView mobileNumber, state, verificationResult;
+    private TextView verificationResult;
+    private RelativeLayout rootLayout;
+    private ImageView resultIcon;
+    private Button btnViewReport;
+    private String responseMobile = "";
+    private String responseState = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification_result);
 
-        mobileNumber = findViewById(R.id.mobileNumber);
-        state = findViewById(R.id.state);
+        rootLayout = findViewById(R.id.rootLayout);
+        resultIcon = findViewById(R.id.resultIcon);
         verificationResult = findViewById(R.id.verificationResult);
+        btnViewReport = findViewById(R.id.btnViewReport);
 
         String apiKey = getIntent().getStringExtra("api_key");
         String accountId = getIntent().getStringExtra("account_id");
@@ -46,6 +54,13 @@ public class VerificationResultActivity extends AppCompatActivity {
         apiService =  RetrofitClient.getClient(apiKey, accountId).create(AadhaarVerificationApiService.class);
 
         sendAadhaarNum(taskId, groupId, aadhaarNumber, userMobileNumber);
+
+        btnViewReport.setOnClickListener(view -> {
+            Intent intent = new Intent(VerificationResultActivity.this, ViewReport.class);
+            intent.putExtra("responseMobile", responseMobile);
+            intent.putExtra("responseState", responseState);
+            startActivity(intent);
+        });
     }
 
     private void sendAadhaarNum(String taskId, String groupId, String aadhaarNumber, String userMobileNumber) {
@@ -79,26 +94,19 @@ public class VerificationResultActivity extends AppCompatActivity {
         apiService.requestMob(requestId).enqueue(new Callback<List<MobileNumRes>>() {
             @Override
             public void onResponse(Call<List<MobileNumRes>> call, Response<List<MobileNumRes>> response) {
-//                Log.d("API Call", apiService.requestMob(requestId).request().url().toString());
+                Log.d("API Call", apiService.requestMob(requestId).request().url().toString());
                 if (response.isSuccessful() && response.body() != null) {
                     MobileNumRes numResponse = response.body().get(0);
-                    String responseMobile = numResponse.getMobileNumber();
-                    String responseState = numResponse.getState();
+                    responseMobile = numResponse.getMobileNumber();
+                    responseState = numResponse.getState();
                     String responseStatus = numResponse.getStatus();
-                    if (responseMobile != null) {
-//                        Log.d("mobile_number", responseMobile);
-                        mobileNumber.setText(responseMobile);
+                    if (responseMobile != null && responseState != null) {
+                        Log.d("mobile_number", responseMobile);
+                        Log.d("state", responseState);
+                        setResult(userMobileNumber, responseMobile, responseStatus);
                     } else {
-                        Log.e("mobile_number", "Mobile number is null", new Throwable());
+                        Log.e("mobile_number or state response", "Mobile number or State is null", new Throwable());
                     }
-                    if (responseState != null) {
-//                        Log.d("state", responseStat);
-                        state.setText(responseState);
-                    } else {
-                        Log.e("state", "State is null", new Throwable());
-                    }
-
-                    setResult(userMobileNumber, responseMobile, responseStatus);
                 }
                 else {
                     Log.e("VerificationResult", "Failed the check. Response failed or Response body is empty: ", new Throwable());
@@ -117,11 +125,15 @@ public class VerificationResultActivity extends AppCompatActivity {
     private void setResult(String userMobileNumber, String  responseMobile, String responseStatus) {
         if (checkMobileNumbers(userMobileNumber, responseMobile) && responseStatus != "failed") {
             verificationResult.setText("Verification Successful.");
-            verificationResult.setTextColor(Color.parseColor("#008000"));
+            verificationResult.setTextColor(ContextCompat.getColor(this, R.color.green));
+            resultIcon.setImageResource(R.drawable.ic_success); // Green tick
+            btnViewReport.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.green));
         }
         else {
             verificationResult.setText("Verification Failed.");
-            verificationResult.setTextColor(Color.parseColor("#FF0000"));
+            verificationResult.setTextColor(ContextCompat.getColor(this, R.color.red));
+            resultIcon.setImageResource(R.drawable.ic_failed); //Red cross
+            btnViewReport.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red));
         }
     }
 

@@ -3,63 +3,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
+        android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:gravity="center"
+        android:background="@color/white">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:text="Mobile Number: "
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:id="@+id/mobileNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:text="--"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:text="State: "
-            android:layout_marginTop="26dp" />
-
-        <TextView
-            android:id="@+id/state"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:text="--"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:text="Verification Result: "
-            android:layout_marginTop="46dp" />
+        <ImageView
+            android:id="@+id/resultIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"/>
 
         <TextView
             android:id="@+id/verificationResult"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:text="--"
-            android:layout_marginTop="16dp" />
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_below="@id/resultIcon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
 
-    </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/btnViewReport"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_below="@id/verificationResult"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:text="View Report"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            app:cornerRadius="30dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/white"
+            app:rippleColor="@color/btn_ripple"
+            android:paddingHorizontal="20dp"
+            android:elevation="4dp"
+            app:backgroundTint="@color/white"/>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

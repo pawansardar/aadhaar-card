@@ -2,6 +2,7 @@
 <ScrollView
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,33 +27,57 @@
             android:layout_marginTop="16dp" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSelectImageFront"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Select Image"
-                android:layout_marginEnd="16dp" />
+                android:layout_weight="1"
+                android:text="Select"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:backgroundTint="@android:color/transparent"
+                android:textColor="@color/blue"
+                app:strokeWidth="2dp"
+                app:strokeColor="@color/blue"
+                app:cornerRadius="50dp"
+                android:minWidth="120dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCaptureImageFront"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Capture Image" />
-
+                android:layout_weight="1"
+                android:text="Capture"
+                style="@style/Widget.MaterialComponents.Button"
+                android:backgroundTint="@color/blue"
+                android:textColor="@color/white"
+                app:cornerRadius="50dp"
+                android:minWidth="120dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp"/>
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FF0000"
-            android:text="* Only upload the back image if address is not present (not found) in the front image."
-            android:layout_marginTop="26dp" />
+            android:text="* Only upload the back image if the address is not present (not found) in the front image."
+            android:textColor="@color/dark_red"
+            android:textSize="14sp"
+            android:background="@color/faint_red"
+            android:padding="12dp"
+            android:gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="26dp"/>
+
 
         <TextView
             android:layout_width="match_parent"
@@ -72,78 +97,88 @@
             android:layout_marginTop="16dp" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSelectImageBack"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Select Image"
-                android:layout_marginEnd="16dp" />
+                android:layout_weight="1"
+                android:text="Select"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Button"
+                android:backgroundTint="@color/blue"
+                android:textColor="@color/white"
+                app:cornerRadius="50dp"
+                android:minWidth="120dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCaptureImageBack"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Capture Image" />
-
+                android:layout_weight="1"
+                android:text="Capture"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:backgroundTint="@android:color/transparent"
+                android:textColor="@color/blue"
+                app:strokeWidth="2dp"
+                app:strokeColor="@color/blue"
+                app:cornerRadius="50dp"
+                android:minWidth="120dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp"/>
         </LinearLayout>
 
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Result will appear here"
-            android:layout_marginTop="16dp" />
+            android:hint="Enter Aadhaar-linked Mobile Number"
+            android:layout_marginTop="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="@color/black"
+            app:hintTextColor="@color/black"
+            app:boxStrokeWidthFocused="2dp">
 
-        <EditText
-            android:id="@+id/editTextName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name"
-            android:inputType="text"
-            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextMobileNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="10"
+                android:inputType="number"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/editTextDOB"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Date of Birth"
-            android:inputType="text"/>
-
-        <EditText
-            android:id="@+id/editTextAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Address"
-            android:inputType="textMultiLine"/>
-
-        <EditText
-            android:id="@+id/editTextAadhaarNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Aadhaar Number"
-            android:maxLength="12"
-            android:inputType="number"/>
-
-        <EditText
-            android:id="@+id/editTextMobileNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="10 digits Mobile Number"
-            android:maxLength="10"
-            android:inputType="number"/>
-
-        <Button
+        <com.google.android.material.button.MaterialButton
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/btnSubmit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Submit"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:fontFamily="@font/poppins_medium"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:backgroundTint="@color/blue"
+            android:textColor="@color/white"
+            app:cornerRadius="30dp"
+            app:elevation="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/light_blue"
+            app:rippleColor="@color/light_blue"/>
 
     </LinearLayout>
+
 </ScrollView>
