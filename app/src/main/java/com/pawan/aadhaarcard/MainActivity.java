@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,8 +42,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageViewFront;
     private ImageView imageViewBack;
     private EditText editTextMobileNumber;
+    private TextView missingValue;
     private String aadhaarNumber = "";
-    private String userMobileNumber = "";
+    private String mobileNumber = "";
+    private String name = "";
+    private String dob = "";
+    private String gender = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         imageViewFront = findViewById(R.id.imageViewFront);
         imageViewBack = findViewById(R.id.imageViewBack);
         editTextMobileNumber = findViewById(R.id.editTextMobileNumber);
+        missingValue = findViewById(R.id.missingValue);
         Button btnSelectImageFront = findViewById(R.id.btnSelectImageFront);
         Button btnSelectImageBack = findViewById(R.id.btnSelectImageBack);
         Button btnCaptureImageFront = findViewById(R.id.btnCaptureImageFront);
@@ -70,17 +76,37 @@ public class MainActivity extends AppCompatActivity {
         String groupId = getGroupIdFromManifest();
 
         btnSubmit.setOnClickListener(view -> {
-            userMobileNumber = editTextMobileNumber.getText().toString().trim();
-            if (!aadhaarNumber.isEmpty() && !userMobileNumber.isEmpty()) {
-                Intent intent = new Intent(MainActivity.this, VerificationResultActivity.class);
-                intent.putExtra("api_key", apiKey);
-                intent.putExtra("account_id", accountId);
-                intent.putExtra("task_id", taskId);
-                intent.putExtra("group_id", groupId);
-                intent.putExtra("aadhaar_number", aadhaarNumber);
-                intent.putExtra("mobile_number", userMobileNumber);
-                startActivity(intent);
+            mobileNumber = editTextMobileNumber.getText().toString().trim();
+            if (aadhaarNumber.length() != 12) {
+                missingValue.setText("Aadhaar Number not found. Please scan the card again.");
+                return;
             }
+            if (name.length() < 2) {
+                missingValue.setText("Name not found. Please scan the card again.");
+                return;
+            }
+            if (dob.length() < 4) {
+                missingValue.setText("Date of Birth not found. Please scan the card again.");
+                return;
+            }
+            if  (gender.length() < 4) {
+                missingValue.setText("Gender not found. Please scan the card again.");
+            }
+            if (mobileNumber.length() != 10) {
+                missingValue.setText("Please enter the Mobile Number.");
+                return;
+            }
+            Intent intent = new Intent(MainActivity.this, VerificationResultActivity.class);
+            intent.putExtra("api_key", apiKey);
+            intent.putExtra("account_id", accountId);
+            intent.putExtra("task_id", taskId);
+            intent.putExtra("group_id", groupId);
+            intent.putExtra("aadhaar_number", aadhaarNumber);
+            intent.putExtra("mobile_number", mobileNumber);
+            intent.putExtra("name", name);
+            intent.putExtra("dob", dob);
+            intent.putExtra("gender", gender);
+            startActivity(intent);
         });
     }
 
@@ -257,9 +283,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void extractFrontInfo(Text text) {
         String resultText = text.getText();
-        String name = extractName(resultText);
-        String dob = extractDOB(resultText);
-        aadhaarNumber = extractAadhaarNumber(resultText, dob);
+        name = extractName(resultText);
+        dob = extractDOB(resultText);
+        aadhaarNumber = extractAadhaarNumber(resultText);
+        gender = extractGender(resultText);
     }
 
     private void extractBackInfo(Text text) {
@@ -291,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        return "Name not found";
+        return "";
     }
 
     private String extractDOB(String text) {
@@ -311,34 +338,35 @@ public class MainActivity extends AppCompatActivity {
             return yobMatcher.group(2).trim(); // Extract only year
         }
 
-        return "DOB not found";
+        return "";
     }
 
-    private String extractAadhaarNumber(String text, String dob) {
+    private String extractGender(String text) {
+        Pattern pattern = Pattern.compile("\\b(Male|Female|Transgender)\\b", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(text);
+
+        if (matcher.find()) {
+            return matcher.group().toLowerCase();
+        }
+        return "";
+    }
+
+    private String extractAadhaarNumber(String text) {
         String[] lines = text.split("\n");
         StringBuilder aadhaarNumBuilder = new StringBuilder();
-        boolean dobFound = false;
         for (String line : lines) {
-            if (line.contains(dob)) {
-                Log.d("extractAadhaarNumber", "DOB Found");
-                dobFound = true;
-                continue;
-            }
-            if (dobFound) {
-                Pattern pattern = Pattern.compile("\\b\\d{4} \\d{4} \\d{4}\\b");
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    String extractedAadhaarNum = matcher.group().replace(" ", "");
-
-                    if (extractedAadhaarNum.matches("\\d{12}")) {
-                        aadhaarNumBuilder.append(extractedAadhaarNum);
-                        break;
-                    }
+            Pattern pattern = Pattern.compile("(?<!\\d)(\\d{4} \\d{4} \\d{4})(?!\\d)");
+            Matcher matcher = pattern.matcher(line);
+            if (matcher.find()) {
+                String extractedAadhaarNum = matcher.group().replace(" ", "");
+                if (extractedAadhaarNum.length() == 12) {
+                    aadhaarNumBuilder.append(extractedAadhaarNum);
+                    break;
                 }
             }
         }
         String aadhaarNumber = aadhaarNumBuilder.toString().trim();
-        return aadhaarNumber.isEmpty() ? "Aadhaar Number not found, try again!" : aadhaarNumber;
+        return aadhaarNumber.isEmpty() ? "" : aadhaarNumber;
     }
 
     private String extractFrontAddress(String text, String name) {
@@ -364,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         String address = addressBuilder.toString().trim();
-        return address.isEmpty() ? "Address not found on the front side" : address;
+        return address.isEmpty() ? "" : address;
     }
 
     private String extractBackAddress(String text) {
@@ -385,6 +413,6 @@ public class MainActivity extends AppCompatActivity {
         }
         addressBuilder.delete(0, 9);
         String address = addressBuilder.toString().trim();
-        return address.isEmpty() ? "Address not found" : address;
+        return address.isEmpty() ? "" : address;
     }
 }

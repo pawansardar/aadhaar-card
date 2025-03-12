@@ -69,15 +69,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="* Only upload the back image if the address is not present (not found) in the front image."
+            android:text="* Only upload the back image if the address is not present in the front image."
             android:textColor="@color/dark_red"
             android:textSize="14sp"
             android:background="@color/faint_red"
             android:padding="12dp"
             android:gravity="center"
             android:fontFamily="sans-serif-medium"
-            android:layout_marginTop="26dp"/>
-
+            android:layout_marginTop="36dp"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -141,7 +140,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Aadhaar-linked Mobile Number"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="36dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxStrokeColor="@color/black"
             app:hintTextColor="@color/black"
@@ -168,7 +167,7 @@
             android:textAllCaps="false"
             android:fontFamily="@font/poppins_medium"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="30dp"
             android:paddingHorizontal="20dp"
             android:paddingVertical="10dp"
             android:backgroundTint="@color/blue"
@@ -178,6 +177,15 @@
             app:strokeWidth="1dp"
             app:strokeColor="@color/light_blue"
             app:rippleColor="@color/light_blue"/>
+
+        <TextView
+            android:id="@+id/missingValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="10dp"/>
 
     </LinearLayout>
 

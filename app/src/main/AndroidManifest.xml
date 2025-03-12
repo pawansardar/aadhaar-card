@@ -36,6 +36,10 @@
             android:name=".ViewReport"
             android:exported="false" />
 
+        <activity
+            android:name=".InvalidAadhaarActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="aadhaar_api_key"
             android:value="@string/my_aadhaar_api_key" />

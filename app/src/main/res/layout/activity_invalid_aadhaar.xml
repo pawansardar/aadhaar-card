@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/invalidAadhaarSign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@android:color/white">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/warningSign"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                app:lottie_rawRes="@raw/red_warning_animation"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false"
+                xmlns:app="http://schemas.android.com/apk/res-auto" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/aadhaarNumberLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/invalidAadhaarSign">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scanned Aadhaar Number: "
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_marginEnd="5dp" />
+
+            <TextView
+                android:id="@+id/aadhaarNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="--" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invalid Aadhaar Number. Please check if the scanned number is correct as per the card. If not, please scan the card again."
+            android:textColor="@color/red"
+            android:layout_below="@id/aadhaarNumberLayout"
+            android:layout_marginTop="16dp"
+            android:gravity="center">
+        </TextView>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

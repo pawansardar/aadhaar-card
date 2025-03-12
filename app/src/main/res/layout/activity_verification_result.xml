@@ -4,11 +4,12 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/rootLayout"
+        android:id="@+id/contentScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/resultIcon"
@@ -46,5 +47,33 @@
             app:backgroundTint="@color/white"/>
 
     </RelativeLayout>
+
+    <!-- Loading Screen (Shown Initially) -->
+    <LinearLayout
+        android:id="@+id/loadingScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingAnimation"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:lottie_rawRes="@raw/blue_dots_loading_animation"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+        <TextView
+            android:id="@+id/loadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verifying Aadhaar..."
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="20dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
