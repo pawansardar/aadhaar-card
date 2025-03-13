@@ -40,6 +40,10 @@
             android:name=".InvalidAadhaarActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ErrorActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="aadhaar_api_key"
             android:value="@string/my_aadhaar_api_key" />

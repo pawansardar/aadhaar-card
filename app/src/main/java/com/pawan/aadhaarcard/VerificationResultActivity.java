@@ -98,7 +98,10 @@ public class VerificationResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<AadhaarNumRes> call, Throwable t) {
-                Toast.makeText(VerificationResultActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Network or API Error: ", "Sending Aadhaar Number API block error.", new Throwable());
+                Intent intent = new Intent(VerificationResultActivity.this, ErrorActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -115,9 +118,6 @@ public class VerificationResultActivity extends AppCompatActivity {
                     responseState = numResponse.getState();
                     String responseStatus = numResponse.getStatus();
                     if (responseGender != null && responseMobile != null && responseState != null) {
-                        Log.d("mobile_number", responseMobile);
-                        Log.d("state", responseState);
-                        Log.d("gender", responseGender);
                         boolean mobResult = checkMobileNumbers(userMobileNumber, responseMobile);
                         boolean genderResult = checkGenders(gender, responseGender.toLowerCase());
                         setResult(responseStatus, mobResult, genderResult);
@@ -128,7 +128,6 @@ public class VerificationResultActivity extends AppCompatActivity {
                     else if (responseStatus.equals("failed")) {
                         String aadhaarNumber = getIntent().getStringExtra("aadhaar_number");
                         Intent intent = new Intent(VerificationResultActivity.this, InvalidAadhaarActivity.class);
-                        Log.d("Aadhaar Number: ", aadhaarNumber);
                         intent.putExtra("aadhaar_number", aadhaarNumber);
                         startActivity(intent);
                         finish();
@@ -142,8 +141,10 @@ public class VerificationResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<MobileNumRes>> call, Throwable t) {
-                Log.e("VerificationResult", "Error: " + t.getMessage());
-                Toast.makeText(VerificationResultActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Network or API Error: ", "Request details API block error.", new Throwable());
+                Intent intent = new Intent(VerificationResultActivity.this, ErrorActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

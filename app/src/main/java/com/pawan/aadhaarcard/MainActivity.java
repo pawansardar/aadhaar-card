@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
@@ -199,51 +201,89 @@ public class MainActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
         }
-//        }
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == RESULT_OK) {
+//            if (requestCode == REQUEST_IMAGE_PICK_FRONT || requestCode == REQUEST_IMAGE_PICK_BACK) {
+//                try {
+//                    if (data != null && data.getData() != null) {
+//                        Uri imageUri = data.getData();
+//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+//                        handleImageResult(requestCode, bitmap);
+//                    }
+//                }
+//                catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            else if (requestCode == REQUEST_IMAGE_CAPTURE_FRONT || requestCode == REQUEST_IMAGE_CAPTURE_BACK) {
+//                try {
+//                    Log.d("MainActivity -> onActivityResult()", "Image URI: " + imageUri);
+//                    if (imageUri != null) {
+//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+//                        handleImageResult(requestCode, bitmap);
+//                    }
+//                    else {
+//                        Toast.makeText(this, "Captured image URI is null", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_PICK_FRONT || requestCode == REQUEST_IMAGE_PICK_BACK) {
-                try {
+            try {
+                Uri selectedImageUri = null;
+                if (requestCode == REQUEST_IMAGE_PICK_FRONT || requestCode == REQUEST_IMAGE_PICK_BACK) {
                     if (data != null && data.getData() != null) {
-                        Uri imageUri = data.getData();
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                        handleImageResult(requestCode, bitmap);
+                        selectedImageUri = data.getData();
                     }
+                } else if (requestCode == REQUEST_IMAGE_CAPTURE_FRONT || requestCode == REQUEST_IMAGE_CAPTURE_BACK) {
+                    selectedImageUri = imageUri; // Use global imageUri for captured images
                 }
-                catch (IOException e) {
-                    e.printStackTrace();
+
+                if (selectedImageUri != null) {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                    imageUri = selectedImageUri; // Store the URI for later use
+                    handleImageResult(requestCode, bitmap);
+                } else {
+                    Toast.makeText(this, "Failed to retrieve image", Toast.LENGTH_SHORT).show();
                 }
-            }
-            else if (requestCode == REQUEST_IMAGE_CAPTURE_FRONT || requestCode == REQUEST_IMAGE_CAPTURE_BACK) {
-                try {
-                    Log.d("MainActivity -> onActivityResult()", "Image URI: " + imageUri);
-                    if (imageUri != null) {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                        handleImageResult(requestCode, bitmap);
-                    }
-                    else {
-                        Toast.makeText(this, "Captured image URI is null", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
     public void handleImageResult(int requestCode, Bitmap bitmap) {
+        Uri selectedUri = (requestCode == REQUEST_IMAGE_PICK_FRONT || requestCode == REQUEST_IMAGE_PICK_BACK)
+                ? imageUri // This is likely null for image pick
+                : this.imageUri; // Use global imageUri for captured images
+
+        if (selectedUri == null) {
+            Log.e("MainActivity", "handleImageResult: Image URI is null");
+            return;
+        }
+
+        int rotation = getImageRotation(imageUri);
+        Bitmap rotatedBitmap = rotateBitmap(bitmap, rotation);
+
         if (requestCode == REQUEST_IMAGE_PICK_FRONT || requestCode == REQUEST_IMAGE_CAPTURE_FRONT) {
-            imageViewFront.setImageBitmap(bitmap);
-            processFrontImage(bitmap);
+            imageViewFront.setImageBitmap(rotatedBitmap);
+            processFrontImage(rotatedBitmap);
         }
         else if (requestCode == REQUEST_IMAGE_PICK_BACK || requestCode == REQUEST_IMAGE_CAPTURE_BACK) {
-            imageViewBack.setImageBitmap(bitmap);
-            processBackImage(bitmap);
+            imageViewBack.setImageBitmap(rotatedBitmap);
+            processBackImage(rotatedBitmap);
         }
 
         // Delete the captured image if it was taken from the camera
@@ -252,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Delete the captured image from storage
     private void deleteCapturedImage() {
         if (imageUri != null) {
             try {
@@ -261,6 +302,40 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MainActivity", "Failed to delete captured image", e);
             }
         }
+    }
+
+    // Check the orientation of the image
+    private int getImageRotation(Uri imageUri) {
+        int rotation = 0;
+        try {
+            ExifInterface exif = new ExifInterface(getContentResolver().openInputStream(imageUri));
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotation = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotation = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotation = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rotation;
+    }
+
+    // Rotate the image if it is not straight
+    private Bitmap rotateBitmap(Bitmap bitmap, int rotation) {
+        if (rotation == 0) return bitmap; // No rotation needed
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotation);
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     private void processFrontImage(Bitmap bitmap) {
