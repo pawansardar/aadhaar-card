@@ -19,12 +19,18 @@
 
         <ImageView
             android:id="@+id/imageViewFront"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:background="@android:color/darker_gray"
-            android:layout_marginTop="16dp" />
+            android:background="@drawable/gradient_bg"
+            android:layout_marginTop="16dp"
+            android:elevation="8dp"
+            android:clipToOutline="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Front Image"
+            android:outlineProvider="background"
+            android:transitionName="imageTransition"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -88,12 +94,18 @@
 
         <ImageView
             android:id="@+id/imageViewBack"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:background="@android:color/darker_gray"
-            android:layout_marginTop="16dp" />
+            android:background="@drawable/gradient_bg"
+            android:layout_marginTop="16dp"
+            android:elevation="8dp"
+            android:clipToOutline="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Front Image"
+            android:outlineProvider="background"
+            android:transitionName="imageTransition"/>
 
         <LinearLayout
             android:layout_width="match_parent"

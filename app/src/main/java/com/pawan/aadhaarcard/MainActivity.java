@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -79,23 +80,18 @@ public class MainActivity extends AppCompatActivity {
 
         btnSubmit.setOnClickListener(view -> {
             mobileNumber = editTextMobileNumber.getText().toString().trim();
-            if (aadhaarNumber.length() != 12) {
-                missingValue.setText("Aadhaar Number not found. Please scan the card again.");
+            // Reset error message
+            missingValue.setText("");
+            missingValue.setVisibility(View.GONE);
+
+            if (aadhaarNumber.length() != 12 || name.length() < 2 || dob.length() < 4 || gender.length() < 4) {
+                missingValue.setText("Aadhaar Card didn't scan correctly. Please scan the card again.");
+                missingValue.setVisibility(View.VISIBLE);
                 return;
-            }
-            if (name.length() < 2) {
-                missingValue.setText("Name not found. Please scan the card again.");
-                return;
-            }
-            if (dob.length() < 4) {
-                missingValue.setText("Date of Birth not found. Please scan the card again.");
-                return;
-            }
-            if  (gender.length() < 4) {
-                missingValue.setText("Gender not found. Please scan the card again.");
             }
             if (mobileNumber.length() != 10) {
                 missingValue.setText("Please enter the Mobile Number.");
+                missingValue.setVisibility(View.VISIBLE);
                 return;
             }
             Intent intent = new Intent(MainActivity.this, VerificationResultActivity.class);
@@ -202,40 +198,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
         }
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            if (requestCode == REQUEST_IMAGE_PICK_FRONT || requestCode == REQUEST_IMAGE_PICK_BACK) {
-//                try {
-//                    if (data != null && data.getData() != null) {
-//                        Uri imageUri = data.getData();
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-//                        handleImageResult(requestCode, bitmap);
-//                    }
-//                }
-//                catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            else if (requestCode == REQUEST_IMAGE_CAPTURE_FRONT || requestCode == REQUEST_IMAGE_CAPTURE_BACK) {
-//                try {
-//                    Log.d("MainActivity -> onActivityResult()", "Image URI: " + imageUri);
-//                    if (imageUri != null) {
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-//                        handleImageResult(requestCode, bitmap);
-//                    }
-//                    else {
-//                        Toast.makeText(this, "Captured image URI is null", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
