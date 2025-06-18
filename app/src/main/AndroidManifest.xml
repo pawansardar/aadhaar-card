@@ -43,22 +43,6 @@
         <activity
             android:name=".ErrorActivity"
             android:exported="false" />
-
-        <meta-data
-            android:name="aadhaar_api_key"
-            android:value="@string/my_aadhaar_api_key" />
-
-        <meta-data
-            android:name="account_id"
-            android:value="@string/my_account_id" />
-
-        <meta-data
-            android:name="task_id"
-            android:value="@string/my_task_id" />
-
-        <meta-data
-            android:name="group_id"
-            android:value="@string/my_group_id" />
     </application>
 
 </manifest>

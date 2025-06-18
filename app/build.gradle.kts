@@ -1,6 +1,30 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+} else {
+    throw GradleException("local.properties file not found")
+}
+
+// Now get your values safely
+val apiKey: String = localProperties.getProperty("API_KEY")
+        ?: throw GradleException("API_KEY not found in local.properties")
+
+val accountId: String = localProperties.getProperty("ACCOUNT_ID")
+        ?: throw GradleException("ACCOUNT_ID not found in local.properties")
+
+val taskId: String = localProperties.getProperty("TASK_ID")
+        ?: throw GradleException("TASK_ID not found in local.properties")
+
+val groupId: String = localProperties.getProperty("GROUP_ID")
+        ?: throw GradleException("GROUP_ID not found in local.properties")
 
 android {
     namespace = "com.pawan.aadhaarcard"
@@ -14,6 +38,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "ACCOUNT_ID", "\"$accountId\"")
+        buildConfigField("String", "TASK_ID", "\"$taskId\"")
+        buildConfigField("String", "GROUP_ID", "\"$groupId\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

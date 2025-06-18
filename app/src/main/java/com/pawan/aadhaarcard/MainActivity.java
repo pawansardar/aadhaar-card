@@ -72,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
         btnCaptureImageFront.setOnClickListener(view -> captureImage(REQUEST_IMAGE_CAPTURE_FRONT));
         btnCaptureImageBack.setOnClickListener(view -> captureImage(REQUEST_IMAGE_CAPTURE_BACK));
 
-        String apiKey = getApiKeyFromManifest();
-        String accountId = getAccountIdFromManifest();
-
-        String taskId = getTaskIdFromManifest();
-        String groupId = getGroupIdFromManifest();
+        // Get secrets
+        String apiKey = BuildConfig.API_KEY;
+        String accountId = BuildConfig.ACCOUNT_ID;
+        String taskId = BuildConfig.TASK_ID;
+        String groupId = BuildConfig.GROUP_ID;
 
         btnSubmit.setOnClickListener(view -> {
             mobileNumber = editTextMobileNumber.getText().toString().trim();
@@ -106,50 +106,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("gender", gender);
             startActivity(intent);
         });
-    }
-
-    private String getApiKeyFromManifest() {
-        try {
-            ApplicationInfo appInfo = getPackageManager()
-                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            return appInfo.metaData.getString("aadhaar_api_key");
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String getAccountIdFromManifest() {
-        try {
-            ApplicationInfo appInfo = getPackageManager()
-                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            return appInfo.metaData.getString("account_id");
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String getTaskIdFromManifest() {
-        try {
-            ApplicationInfo appInfo = getPackageManager()
-                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            return appInfo.metaData.getString("task_id");
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String getGroupIdFromManifest() {
-        try {
-            ApplicationInfo appInfo = getPackageManager()
-                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            return appInfo.metaData.getString("group_id");
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void selectImage(int requestCode) {
